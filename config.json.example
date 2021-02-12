@@ -1,0 +1,9 @@
+{
+    "mapping": {
+        "channel_id": ["👋", custom_emoji_id],
+        "channel_id2": ["👋", custom_emoji_id2]
+    },
+    "bot_token": "",
+    "list_roles": [role_id, role_id2],
+    "role_command": ">showroles"
+}
