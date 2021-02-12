@@ -21,11 +21,19 @@ async def react(message):
 
 async def showroles(message):
     infoEmbed = Embed(title="Roles")
-    desc = 'This server has ' + str(bot.get_guild(message.guild.id).member_count) + ' members.\n\n'
-    await message.guild.fetch_members(limit=None).flatten()
-    for r in await message.guild.fetch_roles():
-        if r.id in config["list_roles"]:
-            desc += '**' + r.name + '**: ' + str(len(r.members)) + '\n'
+    roles = {}
+    async for member in message.guild.fetch_members(limit=None):
+        for member_role in member.roles:
+            if member_role.id in config["list_roles"]:
+                if member_role.name in roles:
+                    roles[member_role.name] += 1
+                else:
+                    roles[member_role.name] = 1
+    
+    desc = f"This server has {str(bot.get_guild(message.guild.id).member_count)} members.\n\n"
+    for key, value in roles.items():
+        desc += f"**{key}**: {value}\n"
+    
     infoEmbed.description = desc
     await message.channel.send(embed=infoEmbed)
 
@@ -34,7 +42,7 @@ async def showroles(message):
 async def on_message(message):
     if message.author == bot.user:
         return
-    if message.content == config["role_command"]:
+    if message.content == config["role_command"] and message.guild is not None:
         return await showroles(message)
     await react(message)
 
