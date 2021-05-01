@@ -1,12 +1,18 @@
 import json
+import re
 
 import discord
 from discord import Embed
 
 bot = discord.Client()
-with open("config.json") as fh:
+with open("config.json", encoding='utf-8') as fh:
     config = json.load(fh)
+xd_regex = r"xd+"
 
+async def xd_message(message):
+    if config.get("enable_xd"):
+        if re.search(xd_regex, message.content, re.IGNORECASE):
+            await message.channel.send("XDDDDDDDDDD")
 
 async def react(message):
     if str(message.channel.id) in config["mapping"].keys():
@@ -45,6 +51,7 @@ async def on_message(message):
     if message.content == config["role_command"] and message.guild is not None:
         return await showroles(message)
     await react(message)
+    await xd_message(message)
 
 def start():
     print("Starting...")
